@@ -1,56 +1,72 @@
-const canvas = document.querySelector("canvas");
+const modeBtn = document.getElementById("mode-btn");
 const colorOptions = Array.from(
   document.getElementsByClassName("color-option")
 );
-const lineWidthValue = document.getElementById("line-width");
-const colorValue = document.getElementById("color");
+const color = document.getElementById("color");
+const lineWidth = document.getElementById("line-width");
+const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 canvas.width = 800;
 canvas.height = 800;
-
-ctx.lineWidth = lineWidthValue.value;
+ctx.lineWidth = lineWidth.value;
 let isPainting = false;
+let isFilling = false;
+
 function onMove(event) {
   if (isPainting) {
     ctx.lineTo(event.offsetX, event.offsetY);
     ctx.stroke();
+    return;
   }
-  ctx.beginPath();
   ctx.moveTo(event.offsetX, event.offsetY);
 }
-
-function startPainting(event) {}
-
-function onMouseDown() {
+function startPainting() {
   isPainting = true;
 }
-
-function onMouseUp() {
+function cancelPainting() {
   isPainting = false;
+  ctx.beginPath();
 }
-
 function onLineWidthChange(event) {
   ctx.lineWidth = event.target.value;
 }
 
 function onColorChange(event) {
   ctx.strokeStyle = event.target.value;
+  ctx.fillStyle = event.target.value;
 }
 
-function changeColorOption(event) {
-  const colorPic = event.target.dataset.color;
-  ctx.strokeStyle = colorPic;
-  colorValue.value = colorPic;
+function onColorClick(event) {
+  const colorValue = event.target.dataset.color;
+  ctx.strokeStyle = colorValue;
+  ctx.fillStyle = colorValue;
+  color.value = colorValue;
+}
+
+function onModeClick() {
+  if (isFilling) {
+    isFilling = false;
+    modeBtn.innerText = "Fill";
+  } else {
+    isFilling = true;
+    modeBtn.innerText = "Draw";
+  }
+}
+
+function onCanvasClick() {
+  if (isFilling) {
+    ctx.fillRect(0, 0, 800, 800);
+  }
 }
 
 canvas.addEventListener("mousemove", onMove);
-canvas.addEventListener("mousedown", onMouseDown);
-canvas.addEventListener("mouseup", onMouseUp);
-canvas.addEventListener("mouseleave", onMouseUp);
+canvas.addEventListener("mousedown", startPainting);
+canvas.addEventListener("mouseup", cancelPainting);
+canvas.addEventListener("mouseleave", cancelPainting);
+canvas.addEventListener("click", onCanvasClick);
+lineWidth.addEventListener("change", onLineWidthChange);
+color.addEventListener("change", onColorChange);
 
-lineWidthValue.addEventListener("change", onLineWidthChange);
-colorValue.addEventListener("change", onColorChange);
+colorOptions.forEach((color) => color.addEventListener("click", onColorClick));
 
-colorOptions.forEach((color) =>
-  color.addEventListener("click", changeColorOption)
-);
+modeBtn.addEventListener("click", onModeClick);
