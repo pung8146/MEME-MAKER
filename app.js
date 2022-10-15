@@ -17,12 +17,18 @@ const colors = [
 ];
 
 function onClick(event) {
+  moveToX = event.offsetX;
+  moveToY = event.offsetY;
+}
+
+function onMouseMove(event) {
   ctx.beginPath();
   const color = colors[Math.floor(Math.random() * colors.length)];
   ctx.strokeStyle = color;
-  ctx.moveTo(0, 0);
+  ctx.moveTo(moveToX, moveToY);
   ctx.lineTo(event.offsetX, event.offsetY);
   ctx.stroke();
 }
 
-canvas.addEventListener("mousemove", onClick);
+canvas.addEventListener("click", onClick);
+canvas.addEventListener("mousemove", onMouseMove);
