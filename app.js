@@ -1,4 +1,6 @@
 const modeBtn = document.getElementById("mode-btn");
+const resetBtn = document.getElementById("destroy-btn");
+const eraseBtn = document.getElementById("erase-btn");
 const colorOptions = Array.from(
   document.getElementsByClassName("color-option")
 );
@@ -59,6 +61,17 @@ function onCanvasClick() {
   }
 }
 
+function onReset() {
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, 800, 800);
+}
+
+function oneraseClick() {
+  ctx.strokeStyle = "white";
+  isFilling = false;
+  modeBtn.innerText = "Fill";
+}
+
 canvas.addEventListener("mousemove", onMove);
 canvas.addEventListener("mousedown", startPainting);
 canvas.addEventListener("mouseup", cancelPainting);
@@ -70,3 +83,5 @@ color.addEventListener("change", onColorChange);
 colorOptions.forEach((color) => color.addEventListener("click", onColorClick));
 
 modeBtn.addEventListener("click", onModeClick);
+resetBtn.addEventListener("click", onReset);
+eraseBtn.addEventListener("click", oneraseClick);
